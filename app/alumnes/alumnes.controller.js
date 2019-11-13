@@ -1,9 +1,13 @@
 angular.module('alumnes')
     .controller('alumnesController', [
         '$scope',
+        '$mdDialog',
+        '$mdToast',
         'alumnesAPI',
         function alumnesController(
             $scope,
+            $mdDialog,
+            $mdToast,
             alumnesAPI
         ) {
             alumnesAPI.get().then((response) => {
@@ -16,21 +20,25 @@ angular.module('alumnes')
         $scope.crearAlumne = (isValid) => {
             if (isValid) {
                 alumnesAPI.post($scope.nouAlumne).then((response) => {
-                    console.log(response);
-
+                    showSimpleToast();
                     alumnesAPI.get().then((response) => {
                         $scope.alumnes = response.data;
                     }, (error) => {
                         console.log(error)
-                    });
+                        });
+                    $scope.nouAlumne.Nom = "";
+                    $scope.nouAlumne.Cognom = "";
+                    $scope.nouAlumne.Dni = "";
+                    $scope.nouAlumne.Tel = "";
 
+                    $scope.loading = true;
                 }, (error) => {
                     console.log(error);
                 });
             }
         }
 
-        $scope.deleteAlumne = (id) => {
+        var deleteAlumne = (id) => {
             alumnesAPI.delete(id).then((response) => {
                 alumnesAPI.get().then((response) => {
                     $scope.alumnes = response.data;
@@ -41,7 +49,22 @@ angular.module('alumnes')
             }, (error) => {
                 console.log(error);
             });
-        };
+        }
+
+        $scope.confirmDelete = (ev, id) => {
+            var confirm = $mdDialog.confirm()
+                .title('Estas segur que vols esborrar al Alumne amb la ID: ' + id +'?')
+                .textContent('El professor que has seleccionat serà esborrat permanentment.')
+                .ariaLabel('Esborrar professor')
+                .targetEvent(ev)
+                .ok('Sips! UwU')
+                .cancel('Ups, cancela Pls');
+
+            $mdDialog.show(confirm).then(function () {
+                deleteAlumne(id);
+            });
+        }
+
 
         $scope.editing = null;
             $scope.canviAlumne = {
@@ -75,4 +98,57 @@ angular.module('alumnes')
             $scope.canviAlumne.Tel = alumne.Tel;
         }
 
+            // TOAST
+
+            var last = {
+                bottom: false,
+                top: true,
+                left: false,
+                right: true
+            };
+
+            var toastPosition = angular.extend({}, last);
+
+            var getToastPosition = () => {
+                sanitizePosition();
+
+                return Object.keys(toastPosition)
+                    .filter(function (pos) {
+                        return toastPosition[pos];
+                    }).join(' ');
+            };
+
+            var sanitizePosition= () => {
+                var current = toastPosition;
+
+                if (current.bottom && last.top) {
+                    current.top = false;
+                }
+                if (current.top && last.bottom) {
+                    current.bottom = false;
+                }
+                if (current.right && last.left) {
+                    current.left = false;
+                }
+                if (current.left && last.right) {
+                    current.right = false;
+                }
+
+                last = angular.extend({}, current);
+            }
+
+            var showSimpleToast = () => {
+                var pinTo = getToastPosition();
+
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent('S\'ha creat l\'alumne!')
+                        .position(pinTo)
+                        .hideDelay(3000))
+                    .then(function () {
+                        console.log('Toast dismissed.');
+                    }).catch(function () {
+                        console.log('Toast failed or was forced to close early by another toast.');
+                    });
+            };
     }])
