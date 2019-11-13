@@ -1,1 +1,77 @@
-<h1>Alumnes</h1>
+<div layout="column" layout-align="start center">
+    <h1 class="md-display-2">Alumnes</h1>
+    <div style="width:90vw" layout="row" layout-align="space-around start">
+        <md-content layout-padding flex="30">
+            <form name="nouAlumneForm" ng-submit="crearAlumne(nouAlumneForm.$valid)">
+                <h2 class="md-headline">Crear nou Alumne</h2>
+                <md-input-container class="md-block">
+                    <label>Nom</label>
+                    <input type="text" md-maxlength="20" required name="nom" ng-model="nouAlumne.Nom">
+                    <div ng-messages="nouAlumneForm.Nom.$error">
+                        <div ng-message="required">Aquest camp és requerit.</div>
+                        <div ng-message="md-maxlength">El nom  no pot passar de 20 caràcters</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Cognom</label>
+                    <input type="text" md-maxlength="40" required name="cap1" ng-model="nouAlumne.Cognom">
+                    <div ng-messages="nouAlumneForm.Cognom.$error">
+                        <div ng-message="required">Aquest camp és requerit.</div>
+                        <div ng-message="md-maxlength">El nom  no pot passar de 40 caràcters</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>DNI</label>
+                    <input type="text" md-maxlength="9" md-minlength="9" required name="DNI" ng-model="nouAlumne.Dni">
+                    <div ng-messages="nouAlumneForm.Dni.$error">
+                        <div ng-message="required">Aquest camp és requerit.</div>
+                        <div ng-message="md-maxlength">El DNI ha d'estar ben formatat</div>
+                        <div ng-message="md-minlength">El DNI ha d'estar ben formatat</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Tel</label>
+                    <input type="tel" required name="Tel" ng-model="nouAlumne.Tel">
+                    <div ng-messages="nouAlumneForm.tel.$error">
+                        <div ng-message="required">Aquest camp és requerit.</div>
+                    </div>
+                </md-input-container>
+                <div>
+                    <md-button class="md-primary md-raised" type="submit">Crear</md-button>
+                </div>
+            </form>
+        </md-content>
+        <div layout="row" layout-align="center start" layout-wrap flex>
+            <md-card ng-repeat="alumne in alumnes | orderBy: 'alumne.nom'" layout-padding class="md-priamry">
+                <md-card-title>
+                    <md-card-title-text class="md-headline">
+                        Alumne {{alumne.Id}}
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content>
+                    <md-list>
+                        <md-list-item>
+                            Nom: <p ng-if="editing != alumne.Id + 'Nom'" ng-dblclick="initUpdateAlumne(alumne , 'Nom')">{{alumne.Nom}}</p>
+                            <input ng-enter="updateAlumne(alumne.Id)" ng-if="editing == alumne.Id + 'Nom'" type="text" name="alumne.nom" ng-model="canviAlumne.Nom" />
+                        </md-list-item>
+                        <md-list-item>
+                            Cognom: <p ng-if="editing != alumne.Id + 'Cognom'" ng-dblclick="initUpdateAlumne(alumne, 'Cognom')">{{alumne.Cognom}}</p>
+                            <input ng-enter="updateAlumne(alumne.Id)" ng-if="editing == alumne.Id + 'Cognom'" type="text" name="alumne.cognom" ng-model="canviAlumne.Cognom" />
+                        </md-list-item>
+                        <md-list-item>
+                            Dni: <p ng-if="editing != alumne.Id + 'Dni'" ng-dblclick="initUpdateAlumne(alumne, 'Dni')">{{alumne.Dni}}</p>
+                            <input ng-enter="updateAlumne(alumne.Id)" ng-if="editing == alumne.Id + 'Dni'" type="text" name="alumne.dni" ng-model="canviAlumne.Dni" />
+                        </md-list-item>
+                        <md-list-item>
+                            Tel: <p ng-if="editing != alumne.Id + 'Tel'" ng-dblclick="initUpdateAlumne(alumne, 'Tel')">{{alumne.Tel}}</p>
+                            <input ng-enter="updateAlumne(alumne.Id)" ng-if="editing == alumne.Id + 'Tel'" type="text" name="alumne.Tel" ng-model="canviAlumne.Tel" />
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+                <md-card-actions>
+                    <md-button class="md-warn md-raised" ng-click="deleteAlumne(alumne.Id)">Esborrar</md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,1 @@
-angular.module('alumnes', []);
+angular.module('alumnes', ['serveis','directives']);

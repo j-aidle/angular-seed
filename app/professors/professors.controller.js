@@ -44,6 +44,7 @@ angular.module('professors')
 
             $scope.editing = null;
             $scope.canviProfessor = {
+                Id: null,
                 Nom: "",
                 Cognom: "",
                 Dni: "",
@@ -66,6 +67,7 @@ angular.module('professors')
 
             $scope.initUpdateProfessor = (profe, param) => {
                 $scope.editing = profe.Id + param;
+                $scope.canviProfessor.Id = profe.Id;
                 $scope.canviProfessor.Nom = profe.Nom;
                 $scope.canviProfessor.Cognom = profe.Cognom;
                 $scope.canviProfessor.Dni = profe.Dni;
