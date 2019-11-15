@@ -8,9 +8,8 @@
     "\\app\\header",
     "\\app\\home",
     "\\app\\primary",
-    "\\app\\professors",
-    "\\app\\serveis"
+    "\\app\\professors"
   ],
-  "SelectedNode": "\\app\\alumnes\\alumnes.controller.js",
+  "SelectedNode": "\\app\\professors\\professors.controller.js",
   "PreviewInSolutionExplorer": false
 }

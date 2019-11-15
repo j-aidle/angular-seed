@@ -2,7 +2,7 @@
   "strict": "global",
   "globals": {
     // AngularJS
-    "angular": false,
+    "angular": true,
 
     // AngularJS mocks
     "module": false,

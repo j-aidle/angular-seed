@@ -71,12 +71,12 @@ angular.module('alumnes')
             }, (error) => {
                 $scope.error = true;
             });
-        }
+        };
 
         $scope.confirmDelete = (ev, id) => {
             var confirm = $mdDialog.confirm()
                 .title('Estas segur que vols esborrar al Alumne amb la ID: ' + id +'?')
-                .textContent('El professor que has seleccionat serà esborrat permanentment.')
+                .textContent('l\'alumne que has seleccionat serï¿½ esborrat permanentment.')
                 .ariaLabel('Esborrar professor')
                 .targetEvent(ev)
                 .ok('Sips! UwU')
@@ -87,9 +87,8 @@ angular.module('alumnes')
             });
         }
 
-
         $scope.editing = null;
-            $scope.canviAlumne = {
+        $scope.canviAlumne = {
             Id: null,
             Nom: "",
             Cognom: "",
@@ -101,10 +100,10 @@ angular.module('alumnes')
             alumnesAPI.update(id, $scope.canviAlumne).then((response) => {
                 alumnesAPI.get().then((response) => {
                     $scope.alumnes = response.data;
+                    $scope.editing = null;
                 }, (error) => {
                     $scope.error = true;
                 });
-                $scope.editing = null;
             }, (error) => {
                 $scope.error = true;
             })
