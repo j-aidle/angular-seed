@@ -1,5 +1,5 @@
 
-<div style="width:90vw" layout="row" layout-align="space-around start">
+<div style="width:90vw" layout="row">
     <md-content layout-padding flex="30">
         <form name="nouAlumneForm" ng-submit="crearAlumne(nouAlumneForm.$valid)">
             <h2 class="md-headline">Crear nou Alumne</h2>
@@ -13,7 +13,7 @@
             </md-input-container>
             <md-input-container class="md-block">
                 <label>Cognom</label>
-                <input type="text" md-maxlength="40" required name="cap1" ng-model="nouAlumne.Cognom">
+                <input type="text" md-maxlength="40" required name="Cognom" ng-model="nouAlumne.Cognom">
                 <div ng-messages="nouAlumneForm.Cognom.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="md-maxlength">El nom  no pot passar de 40 caràcters</div>
@@ -21,7 +21,7 @@
             </md-input-container>
             <md-input-container class="md-block">
                 <label>DNI</label>
-                <input type="text" md-maxlength="9" md-minlength="9" required name="DNI" ng-model="nouAlumne.Dni">
+                <input type="text" md-maxlength="9" md-minlength="9" required name="Dni" ng-model="nouAlumne.Dni">
                 <div ng-messages="nouAlumneForm.Dni.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="md-maxlength">El DNI ha d'estar ben formatat</div>
@@ -31,22 +31,29 @@
             <md-input-container class="md-block">
                 <label>Tel</label>
                 <input type="tel" required name="Tel" ng-model="nouAlumne.Tel">
-                <div ng-messages="nouAlumneForm.tel.$error">
+                <div ng-messages="nouAlumneForm.Tel.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
                 </div>
             </md-input-container>
             <div>
-                <md-button layout="row" layout-align="center center" class="md-primary md-raised" type="submit">
-                <div ng-if="loading">Crear</div>
-                <md-progress-circular class="md-accent" ng-if="!loading" md-diameter="25" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
+                <md-button layout="row" layout-align="center center" class="md-primary md-raised" type="submit" aria-label="Enviar Fromulari">
+                    <div ng-if="!loadingCreate">Crear</div>
+                    <md-progress-circular class="md-primary md-hue-1" ng-if="loadingCreate" md-diameter="25" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
                 </md-button>
             </div>
         </form>
     </md-content>
-    <div layout="column" layout-align="start center">
+    <div layout="column" flex layout-align="start center">
         <h1 class="md-display-2">Alumnes</h1>
         <div layout="row" layout-align="center start" layout-wrap flex>
-            <md-card ng-repeat="alumne in alumnes | orderBy: 'alumne.nom'" layout-padding class="md-priamry">
+            <div ng-if="loadingBody" style="margin-top: 100px;">
+                <md-progress-circular md-diameter="70" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
+            </div>
+            <div style="background-color:#FF4C4C" layout-padding layout="column" layout-align="start center" ng-if="error">
+                <h1 class="md-display-3">Error!!</h1>
+                <h1 class="md-title">Pareix que hem tingut un error accedint a les dades dels alumnes :,(</h1>
+            </div>
+            <md-card ng-if="!loadingBody || !error" ng-repeat="alumne in alumnes | orderBy: 'alumne.nom'" layout-padding class="md-priamry">
                 <md-card-title>
                     <md-card-title-text class="md-headline">
                         Alumne {{alumne.Id}}
@@ -73,7 +80,10 @@
                     </md-list>
                 </md-card-content>
                 <md-card-actions>
-                    <md-button class="md-warn md-raised" ng-click="confirmDelete($event, alumne.Id)">Esborrar</md-button>
+                    <md-button layout="row" layout-align="center center" class="md-warn md-raised" aria-label="Esborrar" ng-click="confirmDelete($event, alumne.Id)">
+                        <div ng-if="loadingDelete != alumne.Id">Esborrar</div>
+                        <md-progress-circular class="md-warn md-hue-3" ng-if="loadingDelete == alumne.Id" md-diameter="25" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
+                    </md-button>
                 </md-card-actions>
             </md-card>
         </div>

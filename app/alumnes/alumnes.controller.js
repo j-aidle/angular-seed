@@ -10,44 +10,66 @@ angular.module('alumnes')
             $mdToast,
             alumnesAPI
         ) {
+            $scope.loadingCreate= false;
+            $scope.loadingDelete = null;
+            $scope.loadingBody = true;
+            $scope.error = false;
+
+            var resetForm = () => {
+                $scope.nouAlumne.Nom = "";
+                $scope.nouAlumne.Cognom = "";
+                $scope.nouAlumne.Dni = "";
+                $scope.nouAlumne.Tel = "";
+                $scope.nouAlumneForm.$setPristine();
+                $scope.nouAlumneForm.nom.$untouched = true;
+                $scope.nouAlumneForm.nom.$touched = false;
+                $scope.nouAlumneForm.Cognom.$untouched = true;
+                $scope.nouAlumneForm.Cognom.$touched = false;
+                $scope.nouAlumneForm.Dni.$untouched = true;
+                $scope.nouAlumneForm.Dni.$touched = false;
+                $scope.nouAlumneForm.Tel.$untouched = true;
+                $scope.nouAlumneForm.Tel.$touched = false;
+            }
+
             alumnesAPI.get().then((response) => {
                 $scope.alumnes = response.data;
-                console.log(response.data);
+                $scope.loadingBody = false;
             }, (error) => {
-                console.log(error)
-            });
+                $scope.loadingBody = false;
+                    $scope.error = true;
+                });
+            
+            $scope.crearAlumne = (isValid) => {
 
-        $scope.crearAlumne = (isValid) => {
             if (isValid) {
+                $scope.loadingCreate = true;
                 alumnesAPI.post($scope.nouAlumne).then((response) => {
-                    showSimpleToast();
                     alumnesAPI.get().then((response) => {
                         $scope.alumnes = response.data;
                     }, (error) => {
-                        console.log(error)
+                        $scope.error = true;
                         });
-                    $scope.nouAlumne.Nom = "";
-                    $scope.nouAlumne.Cognom = "";
-                    $scope.nouAlumne.Dni = "";
-                    $scope.nouAlumne.Tel = "";
-
-                    $scope.loading = true;
+                    resetForm();
+                    //set input to untouched angularjs TODO
+                    $scope.loadingCreate = false;
+                    ToastCreate();
                 }, (error) => {
-                    console.log(error);
+                    $scope.error = true;
                 });
             }
         }
 
-        var deleteAlumne = (id) => {
+            var deleteAlumne = (id) => {
+                $scope.loadingDelete = id;
             alumnesAPI.delete(id).then((response) => {
                 alumnesAPI.get().then((response) => {
                     $scope.alumnes = response.data;
+                    ToastDelete();
                 }, (error) => {
-                    console.log(error)
+                    $scope.error = true;
                 });
-
             }, (error) => {
-                console.log(error);
+                $scope.error = true;
             });
         }
 
@@ -77,15 +99,14 @@ angular.module('alumnes')
 
         $scope.updateAlumne = (id) => {
             alumnesAPI.update(id, $scope.canviAlumne).then((response) => {
-                console.log(response);
                 alumnesAPI.get().then((response) => {
                     $scope.alumnes = response.data;
                 }, (error) => {
-                    console.log(error)
+                    $scope.error = true;
                 });
                 $scope.editing = null;
             }, (error) => {
-                console.log(error);
+                $scope.error = true;
             })
         }
 
@@ -96,7 +117,10 @@ angular.module('alumnes')
             $scope.canviAlumne.Cognom = alumne.Cognom;
             $scope.canviAlumne.Dni = alumne.Dni;
             $scope.canviAlumne.Tel = alumne.Tel;
-        }
+            }
+
+            
+
 
             // TOAST
 
@@ -137,18 +161,23 @@ angular.module('alumnes')
                 last = angular.extend({}, current);
             }
 
-            var showSimpleToast = () => {
+            var ToastCreate = () => {
                 var pinTo = getToastPosition();
 
                 $mdToast.show(
                     $mdToast.simple()
                         .textContent('S\'ha creat l\'alumne!')
                         .position(pinTo)
-                        .hideDelay(3000))
-                    .then(function () {
-                        console.log('Toast dismissed.');
-                    }).catch(function () {
-                        console.log('Toast failed or was forced to close early by another toast.');
-                    });
+                        .hideDelay(3000));
+            };
+
+            var ToastDelete = () => {
+                var pinTo = getToastPosition();
+
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent('S\'ha esborrat l\'alumne!')
+                        .position(pinTo)
+                        .hideDelay(3000));
             };
     }])

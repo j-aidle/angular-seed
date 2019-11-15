@@ -3,12 +3,14 @@
     "",
     "\\app",
     "\\app\\alumnes",
+    "\\app\\app",
+    "\\app\\directives",
     "\\app\\header",
     "\\app\\home",
     "\\app\\primary",
     "\\app\\professors",
     "\\app\\serveis"
   ],
-  "SelectedNode": "\\app\\professors\\professors.controller.js",
+  "SelectedNode": "\\app\\alumnes\\alumnes.controller.js",
   "PreviewInSolutionExplorer": false
 }
