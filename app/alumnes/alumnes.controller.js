@@ -10,10 +10,12 @@ angular.module('alumnes')
             $mdToast,
             alumnesAPI
         ) {
-            $scope.loadingCreate= false;
+            $scope.loadingCreate = false;
             $scope.loadingDelete = null;
             $scope.loadingBody = true;
             $scope.error = false;
+            $scope.opcions = ['Nom', 'Cognom', 'Dni', 'Tel'];
+            $scope.opcio = 'Nom';
 
             var resetForm = () => {
                 $scope.nouAlumne.Nom = "";
@@ -21,8 +23,8 @@ angular.module('alumnes')
                 $scope.nouAlumne.Dni = "";
                 $scope.nouAlumne.Tel = "";
                 $scope.nouAlumneForm.$setPristine();
-                $scope.nouAlumneForm.nom.$untouched = true;
-                $scope.nouAlumneForm.nom.$touched = false;
+                $scope.nouAlumneForm.Nom.$untouched = true;
+                $scope.nouAlumneForm.Nom.$touched = false;
                 $scope.nouAlumneForm.Cognom.$untouched = true;
                 $scope.nouAlumneForm.Cognom.$touched = false;
                 $scope.nouAlumneForm.Dni.$untouched = true;
@@ -36,90 +38,85 @@ angular.module('alumnes')
                 $scope.loadingBody = false;
             }, (error) => {
                 $scope.loadingBody = false;
-                    $scope.error = true;
-                });
-            
-            $scope.crearAlumne = (isValid) => {
+                $scope.error = true;
+            });
 
-            if (isValid) {
-                $scope.loadingCreate = true;
-                alumnesAPI.post($scope.nouAlumne).then((response) => {
-                    alumnesAPI.get().then((response) => {
-                        $scope.alumnes = response.data;
+            $scope.crearAlumne = (isValid) => {
+                if (isValid) {
+                    $scope.loadingCreate = true;
+                    alumnesAPI.post($scope.nouAlumne).then((response) => {
+                        alumnesAPI.get().then((response) => {
+                            $scope.alumnes = response.data;
+                        }, (error) => {
+                            $scope.error = true;
+                        });
+                        resetForm();
+                        //set input to untouched angularjs TODO
+                        $scope.loadingCreate = false;
+                        ToastCreate();
                     }, (error) => {
                         $scope.error = true;
-                        });
-                    resetForm();
-                    //set input to untouched angularjs TODO
-                    $scope.loadingCreate = false;
-                    ToastCreate();
-                }, (error) => {
-                    $scope.error = true;
-                });
-            }
-        }
+                    });
+                }
+            };
 
             var deleteAlumne = (id) => {
                 $scope.loadingDelete = id;
-            alumnesAPI.delete(id).then((response) => {
-                alumnesAPI.get().then((response) => {
-                    $scope.alumnes = response.data;
-                    ToastDelete();
+                alumnesAPI.delete(id).then((response) => {
+                    alumnesAPI.get().then((response) => {
+                        $scope.alumnes = response.data;
+                        ToastDelete();
+                    }, (error) => {
+                        $scope.error = true;
+                    });
                 }, (error) => {
                     $scope.error = true;
                 });
-            }, (error) => {
-                $scope.error = true;
-            });
-        };
+            };
 
-        $scope.confirmDelete = (ev, id) => {
-            var confirm = $mdDialog.confirm()
-                .title('Estas segur que vols esborrar al Alumne amb la ID: ' + id +'?')
-                .textContent('l\'alumne que has seleccionat ser� esborrat permanentment.')
-                .ariaLabel('Esborrar professor')
-                .targetEvent(ev)
-                .ok('Sips! UwU')
-                .cancel('Ups, cancela Pls');
-
-            $mdDialog.show(confirm).then(function () {
-                deleteAlumne(id);
-            });
-        }
-
-        $scope.editing = null;
-        $scope.canviAlumne = {
-            Id: null,
-            Nom: "",
-            Cognom: "",
-            Dni: "",
-            Tel: ""
-        }
-
-        $scope.updateAlumne = (id) => {
-            alumnesAPI.update(id, $scope.canviAlumne).then((response) => {
-                alumnesAPI.get().then((response) => {
-                    $scope.alumnes = response.data;
-                    $scope.editing = null;
-                }, (error) => {
-                    $scope.error = true;
+            $scope.confirmDelete = (ev, id) => {
+                var confirm = $mdDialog.confirm()
+                    .title('Estas segur que vols esborrar al Alumne amb la ID: ' + id + '?')
+                    .textContent('l\'alumne que has seleccionat serà esborrat permanentment.')
+                    .ariaLabel('Esborrar professor')
+                    .targetEvent(ev)
+                    .ok('Sips! UwU')
+                    .cancel('Ups, cancela Pls');
+                $mdDialog.show(confirm).then(function () {
+                    deleteAlumne(id);
                 });
-            }, (error) => {
-                $scope.error = true;
-            })
-        }
+            };
 
-            $scope.initUpdateAlumne = (alumne, param) => {
-            $scope.editing = alumne.Id + param;
-            $scope.canviAlumne.Id = alumne.Id;
-            $scope.canviAlumne.Nom = alumne.Nom;
-            $scope.canviAlumne.Cognom = alumne.Cognom;
-            $scope.canviAlumne.Dni = alumne.Dni;
-            $scope.canviAlumne.Tel = alumne.Tel;
+            $scope.editing = null;
+            $scope.canviAlumne = {
+                Id: null,
+                Nom: "",
+                Cognom: "",
+                Dni: "",
+                Tel: ""
             }
 
-            
+            $scope.updateAlumne = (id) => {
+                alumnesAPI.update(id, $scope.canviAlumne).then((response) => {
+                    alumnesAPI.get().then((response) => {
+                        $scope.alumnes = response.data;
+                        $scope.editing = null;
+                    }, (error) => {
+                        $scope.error = true;
+                    });
+                }, (error) => {
+                    $scope.error = true;
+                })
+            }
 
+            $scope.initUpdateAlumne = (alumne, param) => {
+                $scope.editing = alumne.Id + param;
+                $scope.canviAlumne.Id = alumne.Id;
+                $scope.canviAlumne.Nom = alumne.Nom;
+                $scope.canviAlumne.Cognom = alumne.Cognom;
+                $scope.canviAlumne.Dni = alumne.Dni;
+                $scope.canviAlumne.Tel = alumne.Tel;
+            }
 
             // TOAST
 
@@ -141,7 +138,7 @@ angular.module('alumnes')
                     }).join(' ');
             };
 
-            var sanitizePosition= () => {
+            var sanitizePosition = () => {
                 var current = toastPosition;
 
                 if (current.bottom && last.top) {
@@ -179,4 +176,4 @@ angular.module('alumnes')
                         .position(pinTo)
                         .hideDelay(3000));
             };
-    }])
+        }]);

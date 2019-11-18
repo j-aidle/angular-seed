@@ -5,9 +5,9 @@
             <h2 class="md-headline">Crear nou Professor</h2>
             <md-input-container class="md-block">
                 <label>Nom</label>
-                <input type="text" md-maxlength="20" required name="nom" ng-model="nouProfe.Nom">
+                <input type="text" md-maxlength="20" required name="Nom" ng-model="nouProfe.Nom">
                 <div ng-messages="nouProfessorForm.Nom.$error">
-                    <div ng-message="required">Aquest camp �s requerit.</div>
+                    <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="md-maxlength">El nom  no pot passar de 20 car�cters</div>
                 </div>
             </md-input-container>
@@ -15,36 +15,49 @@
                 <label>Cognom</label>
                 <input type="text" md-maxlength="40" required name="Cognom" ng-model="nouProfe.Cognom">
                 <div ng-messages="nouProfessorForm.Cognom.$error">
-                    <div ng-message="required">Aquest camp �s requerit.</div>
+                    <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="md-maxlength">El nom  no pot passar de 40 car�cters</div>
                 </div>
             </md-input-container>
             <md-input-container class="md-block">
                 <label>DNI</label>
-                <input type="text" md-maxlength="9" md-minlength="9" required name="Dni" ng-model="nouProfe.Dni">
+                <input type="text" ng-pattern="/[0-9]{8}[A-Z]{1}/" md-maxlength="9" required name="Dni" ng-model="nouProfe.Dni">
                 <div ng-messages="nouProfessorForm.Dni.$error">
-                    <div ng-message="required">Aquest camp �s requerit.</div>
-                    <div ng-message="md-maxlength">El DNI ha d'estar ben formatat</div>
-                    <div ng-message="md-minlength">El DNI ha d'estar ben formatat</div>
+                    <div ng-message="required">Aquest camp és requerit.</div>
+                    <div ng-message="md-maxlength">El DNI ha d'estar ben formatat (NNNNNNNNA)</div>
+                    <div ng-message="pattern">El DNI ha d'estar ben formatat (NNNNNNNNA)</div>
                 </div>
             </md-input-container>
             <md-input-container class="md-block">
                 <label>Tel</label>
-                <input type="tel" required name="Tel" ng-model="nouProfe.Tel">
+                <input type="text" ng-pattern="/[0-9]{9}/" md-maxlength="9" required name="Tel" ng-model="nouProfe.Tel">
                 <div ng-messages="nouProfessorForm.Tel.$error">
-                    <div ng-message="required">Aquest camp �s requerit.</div>
+                    <div ng-message="required">Aquest camp és requerit.</div>
+                    <div ng-message="pattern">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
+                    <div ng-message="md-maxlength">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
+
                 </div>
             </md-input-container>
             <div>
                 <md-button layout="row" layout-align="center center" class="md-primary md-raised" type="submit" aria-label="Enviar Fromulari">
                     <div ng-if="!loadingCreate">Crear</div>
-                    <md-progress-circular class="md-primary md-hue-1" ng-if="loadingCreate" md-diameter="25" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
+                    <md-progress-circular class="md-primary md-hue-1" ng-if="loadingCreate" md-diameter="25" md-mode="indeterminate" value="..."></md-progress-circular>
                 </md-button>
             </div>
         </form>
     </md-content>
     <div layout="column" flex layout-align="start center">
         <h1 class="md-display-2">Professors</h1>
+        <div layout="row">
+            <md-input-container>
+                <input type="text" placeholder="Filtrar..." ng-model="filtre" name="filtre" />
+            </md-input-container>
+            <md-input-container>
+                <md-select ng-model="opcio" placeholder="ordre">
+                    <md-option ng-value="opcio" ng-repeat="opcio in opcions">{{opcio}}</md-option>
+                </md-select>
+            </md-input-container>
+        </div>
         <div layout="row" layout-align="center start" layout-wrap flex>
             <div ng-if="loadingBody" style="margin-top: 100px;">
                 <md-progress-circular md-diameter="70" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
@@ -53,7 +66,7 @@
                 <h1 class="md-display-3">Error!!</h1>
                 <h1 class="md-title">Pareix que hem tingut un error accedint a les dades dels professors :,(</h1>
             </div>
-            <md-card ng-if="!loadingBody || !error" ng-repeat="professor in professors | orderBy: 'professor.nom'" layout-padding class="md-priamry">
+            <md-card ng-if="!loadingBody || !error" ng-repeat="professor in professors | orderBy: opcio | filter: filtre" layout-padding class="md-priamry">
                 <md-card-title>
                     <md-card-title-text class="md-headline">
                         Professor {{professor.Id}}

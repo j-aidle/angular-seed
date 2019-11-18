@@ -5,7 +5,7 @@
             <h2 class="md-headline">Crear nou Alumne</h2>
             <md-input-container class="md-block">
                 <label>Nom</label>
-                <input type="text" md-maxlength="20" required name="nom" ng-model="nouAlumne.Nom">
+                <input type="text" md-maxlength="20" required name="Nom" ng-model="nouAlumne.Nom">
                 <div ng-messages="nouAlumneForm.Nom.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="md-maxlength">El nom  no pot passar de 20 caràcters</div>
@@ -21,18 +21,20 @@
             </md-input-container>
             <md-input-container class="md-block">
                 <label>DNI</label>
-                <input type="text" md-maxlength="9" md-minlength="9" required name="Dni" ng-model="nouAlumne.Dni">
+                <input type="text" ng-pattern="/[0-9]{8}[A-Z]{1}/" md-maxlength="9" required required name="Dni" ng-model="nouAlumne.Dni">
                 <div ng-messages="nouAlumneForm.Dni.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
-                    <div ng-message="md-maxlength">El DNI ha d'estar ben formatat</div>
-                    <div ng-message="md-minlength">El DNI ha d'estar ben formatat</div>
+                    <div ng-message="md-maxlength">El DNI ha d'estar ben formatat (NNNNNNNNA)</div>
+                    <div ng-message="pattern">El DNI ha d'estar ben formatat (NNNNNNNNA)</div>
                 </div>
             </md-input-container>
             <md-input-container class="md-block">
                 <label>Tel</label>
-                <input type="tel" required name="Tel" ng-model="nouAlumne.Tel">
+                <input type="text" ng-pattern="/[0-9]{9}/" md-maxlength="9" required name="Tel" ng-model="nouAlumne.Tel">
                 <div ng-messages="nouAlumneForm.Tel.$error">
                     <div ng-message="required">Aquest camp és requerit.</div>
+                    <div ng-message="pattern">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
+                    <div ng-message="md-maxlength">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
                 </div>
             </md-input-container>
             <div>
@@ -45,6 +47,16 @@
     </md-content>
     <div layout="column" flex layout-align="start center">
         <h1 class="md-display-2">Alumnes</h1>
+        <div layout="row">
+            <md-input-container>
+                <input type="text" placeholder="Filtrar..." ng-model="filtre" name="filtre" />
+            </md-input-container>
+            <md-input-container>
+                <md-select ng-model="opcio" placeholder="ordre">
+                    <md-option ng-value="opcio" ng-repeat="opcio in opcions">{{opcio}}</md-option>
+                </md-select>
+            </md-input-container>
+        </div>
         <div layout="row" layout-align="center start" layout-wrap flex>
             <div ng-if="loadingBody" style="margin-top: 100px;">
                 <md-progress-circular md-diameter="70" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
