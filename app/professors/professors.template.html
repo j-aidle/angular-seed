@@ -1,4 +1,3 @@
-
 <div style="width:90vw" layout="row">
     <md-content layout-padding flex="30">
         <form name="nouProfessorForm" ng-submit="crearProfe(nouProfessorForm.$valid)">
@@ -35,7 +34,6 @@
                     <div ng-message="required">Aquest camp és requerit.</div>
                     <div ng-message="pattern">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
                     <div ng-message="md-maxlength">El Telèfon ha d'estar ben formatat (NNNNNNNNN)</div>
-
                 </div>
             </md-input-container>
             <div>
@@ -46,9 +44,9 @@
             </div>
         </form>
     </md-content>
-    <div layout="column" flex layout-align="start center">
-        <h1 class="md-display-2">Professors</h1>
-        <div layout="row">
+    <div layout="column" flex layout-padding layout-align="start center">
+        <h1 class="md-display-2">Alumnes</h1>
+        <div layout="row" layout-align="start start" style="width:100vw">
             <md-input-container>
                 <input type="text" placeholder="Filtrar..." ng-model="filtre" name="filtre" />
             </md-input-container>
@@ -59,14 +57,14 @@
             </md-input-container>
         </div>
         <div layout="row" layout-align="center start" layout-wrap flex>
-            <div ng-if="loadingBody" style="margin-top: 100px;">
+            <div ng-if="loadingBody">
                 <md-progress-circular md-diameter="70" md-mode="indeterminate" ng-disabled="false" value="..."></md-progress-circular>
             </div>
             <div style="background-color:#FF4C4C" layout-padding layout="column" layout-align="start center" ng-if="error">
                 <h1 class="md-display-3">Error!!</h1>
                 <h1 class="md-title">Pareix que hem tingut un error accedint a les dades dels professors :,(</h1>
             </div>
-            <md-card ng-if="!loadingBody || !error" ng-repeat="professor in professors | orderBy: opcio | filter: filtre" layout-padding class="md-priamry">
+            <md-card ng-if="!error" ng-repeat="professor in professors | orderBy: opcio | filter: filtre" layout-padding class="md-priamry">
                 <md-card-title>
                     <md-card-title-text class="md-headline">
                         Professor {{professor.Id}}
