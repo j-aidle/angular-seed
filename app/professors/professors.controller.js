@@ -16,6 +16,17 @@ angular.module('professors')
                 $scope.error = false;
                 $scope.opcions = ['Nom', 'Cognom', 'Dni', 'Tel'];
                 $scope.opcio = 'Nom';
+                
+                var fresh = () => {
+                    professorsAPI.get().then((response) => {
+                        $scope.professors = response.data;
+                        $scope.loadingBody = false;
+                    }, (error) => {
+                        $scope.loadingBody = false;
+                        $scope.error = true;
+                    });
+                };
+                fresh();
 
                 var resetForm = () => {
                     $scope.nouProfe.Nom = "";
@@ -33,13 +44,6 @@ angular.module('professors')
                     $scope.nouProfessorForm.Tel.$touched = false;
                 };
 
-                professorsAPI.get().then((response) => {
-                    $scope.professors = response.data;
-                    $scope.loadingBody = false;
-                }, (error) => {
-                    $scope.loadingBody = false;
-                    $scope.error = true;
-                });
                 $scope.crearProfe = (isValid) => {
                     if (isValid) {
                         $scope.loadingCreate = true;
@@ -71,19 +75,6 @@ angular.module('professors')
                         $scope.error = true;
                     });
                 };
-
-                $scope.confirmDelete = (ev, id) => {
-                    var confirm = $mdDialog.confirm()
-                        .title('Estas segur que vols esborrar al Professor amb la ID: ' + id + '?')
-                        .textContent('El professor que has seleccionat serà esborrat permanentment.')
-                        .ariaLabel('Esborrar professor')
-                        .targetEvent(ev)
-                        .ok('Sips! UwU')
-                        .cancel('Ups, cancela Pls');
-                    $mdDialog.show(confirm).then(function () {
-                        deleteProfessor(id);
-                    });
-                }
 
                 $scope.editing = null;
                 $scope.canviProfessor = {
